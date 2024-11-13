@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Slide Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            background-color: black;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(
+                circle at top left,
+                rgba(255, 255, 255, 0.1),
+                transparent 40%
+            );
+            pointer-events: none;
+        }
+
+        .slide-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .slide {
+            width: 100%;
+            height: auto;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            border-radius: 15px;
+        }
+
+        .slide.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .slide-counter {
+            font-size: 18px;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-width: 140px;
+            text-align: center;
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: rgba(255, 255, 255, 0.5);
+            transition: width 0.3s ease;
+        }
+
+        /* Arrow icons */
+        .arrow {
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 4px;
+            margin-top: 2px;
+        }
+
+        .right {
+            transform: rotate(-45deg);
+        }
+
+        .left {
+            transform: rotate(135deg);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .button-glow {
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="slide-container">
+            <img src="https://cdn.glitch.global/0846f6ac-90cd-4f0b-a9e6-783892332eac/World%20(1).png?v=1731463098413" class="slide active" alt="Slide 1">
+            <img src="https://cdn.glitch.global/0846f6ac-90cd-4f0b-a9e6-783892332eac/2.png?v=1731413053612" class="slide" alt="Slide 2">
+            <img src="https://cdn.glitch.global/0846f6ac-90cd-4f0b-a9e6-783892332eac/3.png?v=1731413056161" class="slide" alt="Slide 3">
+            <img src="https://cdn.glitch.global/0846f6ac-90cd-4f0b-a9e6-783892332eac/4.png?v=1731413059281" class="slide" alt="Slide 4">
+            <img src="https://cdn.glitch.global/0846f6ac-90cd-4f0b-a9e6-783892332eac/5.png?v=1731413063019" class="slide" alt="Slide 5">
+            <img src="https://cdn.glitch.global/0846f6ac-90cd-4f0b-a9e6-783892332eac/6.png?v=1731413066231" class="slide" alt="Slide 6">
+            <img src="https://cdn.glitch.global/0846f6ac-90cd-4f0b-a9e6-783892332eac/7.png?v=1731413069286" class="slide" alt="Slide 7">
+            <img src="https://cdn.glitch.global/0846f6ac-90cd-4f0b-a9e6-783892332eac/8.png?v=1731413071533" class="slide" alt="Slide 8">
+            <img src="https://cdn.glitch.global/0846f6ac-90cd-4f0b-a9e6-783892332eac/9.png?v=1731413074902" class="slide" alt="Slide 9">
+            <img src="https://cdn.glitch.global/0846f6ac-90cd-4f0b-a9e6-783892332eac/10.png?v=1731413078070" class="slide" alt="Slide 10">
+            <img src="https://cdn.glitch.global/0846f6ac-90cd-4f0b-a9e6-783892332eac/11.png?v=1731413080566" class="slide" alt="Slide 11">
+            <img src="https://cdn.glitch.global/0846f6ac-90cd-4f0b-a9e6-783892332eac/12.png?v=1731413083010" class="slide" alt="Slide 12">
+            <img src="https://cdn.glitch.global/0846f6ac-90cd-4f0b-a9e6-783892332eac/13.png?v=1731413087384" class="slide" alt="Slide 13">
+            <img src="https://cdn.glitch.global/0846f6ac-90cd-4f0b-a9e6-783892332eac/14.png?v=1731413089918" class="slide" alt="Slide 14">
+            <img src="https://cdn.glitch.global/0846f6ac-90cd-4f0b-a9e6-783892332eac/15.png?v=1731413092264" class="slide" alt="Slide 15">
+            <img src="https://cdn.glitch.global/0846f6ac-90cd-4f0b-a9e6-783892332eac/16.png?v=1731413094866" class="slide" alt="Slide 16">
+            <img src="https://cdn.glitch.global/0846f6ac-90cd-4f0b-a9e6-783892332eac/World.png?v=1731463099826" class="slide" alt="Slide 17">
+        </div>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        <div class="controls">
+            <a href="https://aftwks.github.io/" target="_blank">
+                <button>Website</button>
+            </a>
+            <button onclick="prevSlide()" id="prevBtn"><i class="arrow left"></i> Previous</button>
+            <span class="slide-counter">Slide <span id="currentSlide">1</span> of 17</span>
+            <button onclick="nextSlide()" id="nextBtn">Next <i class="arrow right"></i></button>
+            <a href="https://x.com/AFTWKS" target="_blank">
+                <button>@AFTWKS</button>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const currentSlideElement = document.getElementById('currentSlide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progress');
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (index === currentSlideIndex) {
+                    slide.classList.add('active');
+                }
+            });
+            
+            currentSlideElement.textContent = currentSlideIndex + 1;
+            
+            // Update button states
+            prevBtn.disabled = currentSlideIndex === 0;
+            nextBtn.disabled = currentSlideIndex === totalSlides - 1;
+
+            // Update progress bar
+            const progress = ((currentSlideIndex + 1) / totalSlides) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            // Add pulse animation to the next button if not on last slide
+            if (!nextBtn.disabled) {
+                nextBtn.classList.add('button-glow');
+            } else {
+                nextBtn.classList.remove('button-glow');
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlideIndex < totalSlides - 1) {
+                currentSlideIndex++;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                updateSlide();
+            }
+        }
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Touch swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const swipeDistance = touchEndX - touchStartX;
+            
+            if (Math.abs(swipeDistance) > swipeThreshold) {
+                if (swipeDistance > 0) {
+                    prevSlide();
+                } else {
+                    nextSlide();
+                }
+            }
+        }
+
+        // Initialize
+        updateSlide();
+    </script>
+</body>
+</html>
