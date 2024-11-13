@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Slide Viewer</title>
+    <title>Vyr / pitch</title>
     <style>
         * {
             margin: 0;
@@ -14,7 +14,7 @@
         body {
             margin: 0;
             padding: 20px;
-            min-height: 100vh;
+            height: 100vh;
             background-color: black;
             font-family: 'Segoe UI', system-ui, sans-serif;
             display: flex;
@@ -24,16 +24,19 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             width: 100%;
+            height: calc(100vh - 40px); /* Account for body padding */
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 30px;
+            padding: 20px;
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             border: 1px solid rgba(255, 255, 255, 0.18);
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .container::before {
@@ -54,19 +57,24 @@
         .slide-container {
             position: relative;
             width: 100%;
-            margin-bottom: 20px;
+            flex: 1;
+            margin-bottom: 10px;
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .slide {
             width: 100%;
-            height: auto;
+            height: 100%;
             display: none;
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
             border-radius: 15px;
+            object-fit: contain;
         }
 
         .slide.active {
@@ -78,17 +86,17 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 30px;
-            margin-top: 30px;
-            padding: 20px;
+            gap: 15px;
+            padding: 15px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
             backdrop-filter: blur(5px);
+            margin-top: auto;
         }
 
         button {
-            padding: 12px 25px;
-            font-size: 16px;
+            padding: 8px 16px;
+            font-size: 14px;
             cursor: pointer;
             background: rgba(255, 255, 255, 0.2);
             color: white;
@@ -101,6 +109,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            white-space: nowrap;
         }
 
         button:hover:not(:disabled) {
@@ -120,23 +129,22 @@
         }
 
         .slide-counter {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 500;
             background: rgba(255, 255, 255, 0.1);
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 12px;
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            min-width: 140px;
+            min-width: 120px;
             text-align: center;
         }
 
-        /* Progress bar */
         .progress-bar {
             width: 100%;
             height: 4px;
             background: rgba(255, 255, 255, 0.1);
-            margin-top: 20px;
+            margin: 10px 0;
             border-radius: 2px;
             overflow: hidden;
         }
@@ -147,12 +155,11 @@
             transition: width 0.3s ease;
         }
 
-        /* Arrow icons */
         .arrow {
             border: solid white;
             border-width: 0 2px 2px 0;
             display: inline-block;
-            padding: 4px;
+            padding: 3px;
             margin-top: 2px;
         }
 
@@ -174,20 +181,27 @@
             animation: pulse 2s infinite;
         }
 
-        /* Responsive adjustments */
         @media (max-width: 768px) {
             .container {
-                padding: 15px;
+                padding: 10px;
+                height: calc(100vh - 20px);
             }
 
             .controls {
-                flex-direction: column;
-                gap: 15px;
+                flex-wrap: wrap;
+                gap: 10px;
+                padding: 10px;
             }
 
             button {
-                width: 100%;
-                justify-content: center;
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            .slide-counter {
+                font-size: 14px;
+                padding: 6px 12px;
+                min-width: 100px;
             }
         }
     </style>
@@ -248,15 +262,15 @@
             
             currentSlideElement.textContent = currentSlideIndex + 1;
             
-            // Update button states
+            
             prevBtn.disabled = currentSlideIndex === 0;
             nextBtn.disabled = currentSlideIndex === totalSlides - 1;
 
-            // Update progress bar
+            
             const progress = ((currentSlideIndex + 1) / totalSlides) * 100;
             progressBar.style.width = `${progress}%`;
 
-            // Add pulse animation to the next button if not on last slide
+            
             if (!nextBtn.disabled) {
                 nextBtn.classList.add('button-glow');
             } else {
@@ -278,7 +292,7 @@
             }
         }
 
-        // Add keyboard navigation
+        
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight' || e.key === 'Space') {
                 nextSlide();
@@ -287,7 +301,7 @@
             }
         });
 
-        // Touch swipe support
+       
         let touchStartX = 0;
         let touchEndX = 0;
 
@@ -313,7 +327,7 @@
             }
         }
 
-        // Initialize
+        
         updateSlide();
     </script>
 </body>
